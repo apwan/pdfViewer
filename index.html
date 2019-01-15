@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PDF Viewer</title>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/1.5.314/pdf.js" type="text/javascript"></script>
+<head>
+<body>
+
+<div class="tab-pane" id="pdf_viewer">
+  <div id="canvas-wrapper" style="height:400px; overflow: scroll;">
+    <canvas id="the-canvas" style="border:1px solid black"></canvas>
+  </div>
+  <ul class="pager" id="pdf_pager">
+    <li><a id="eg_load_pdf">Load sample pdf</a></li>
+    <li><a class="prev glyphicon glyphicon-arrow-left"></a></li>
+    <li>Page:<a class="page_num">1</a> /<a class="page_count">1</a></li>
+    <li><a class="next glyphicon glyphicon-arrow-right"></a></li>
+    <li><a id="open_pdf">Open Score PDF</a></li>
+  </ul>
+</div>
+<script src="./FileLoader.js" type="text/javascript"></script>
+<script src="./viewer.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var file_open_handlers = file_open_handlers || {};
+    file_open_handlers['open_pdf'] = function(evt){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        load_pdf(e.target.result);
+        $('li[data-target="#pdf_viewer"]').click();
+      };
+      reader.readAsArrayBuffer(evt.target.files[0]);
+    }
+    
+
+    var click_event_list = click_event_list || {};
+    click_event_list['eg_load_pdf'] = function(){
+      var pre = "https://scoreur.github.io/gen/";
+      load_pdf( pre + 'score/chopin21.pdf');
+      $('li[data-target="#pdf_viewer"]').click();
+      //$.notify('sample PDF loaded!', 'success');
+
+    } 
+    
+
+    // test
+    $(document).ready(function(){
+    	// register, using FileLoader
+      for(var id in file_open_handlers){
+        openFor(id, file_open_handlers[id]);
+      }
+      // register clicks
+      for(var i in click_event_list){
+        $('#'+i).on('click', click_event_list[i]);
+      }
+    });
+
+</script>
+</body>
+
+<!--
+.tab-pane#pdf_viewer
+  #canvas-wrapper(style="height:400px; overflow: scroll;")
+    canvas#the-canvas(style='border:1px solid black')
+  ul.pager#pdf_pager
+    li
+      a#eg_load_pdf Load sample pdf
+    li
+      a.prev.glyphicon.glyphicon-arrow-left
+    li Page:
+      a.page_num 1
+      |  /
+      a.page_count 1
+    li
+      a.next.glyphicon.glyphicon-arrow-right  
+    li
+      a#open_pdf Open Score PDF
+-->
+</html>
